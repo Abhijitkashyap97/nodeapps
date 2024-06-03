@@ -1,15 +1,23 @@
-//we can not have blocking code in stack
-//we have to put it inside some async functions
-const http=require('http');
-const {readFile,writeFile}=require('fs').promises;
-let file='';
-const server=http.createServer((req,res)=>{
-  const start= async()=>{
-    file= await readFile('./public/index.html','utf-8');
-  }
-  start();
-  res.end(file);
+const express=require('express')
+const path=require('path')
+const app=express()
+
+app.get('/',(req,res)=>{
+    res.sendFile(path.resolve(__dirname,'./public/index.html'))
 })
-server.listen(3000)
+app.get('/styles.css',(req,res)=>{
+    res.sendFile(path.resolve(__dirname,'./public/styles.css'))
+})
+app.get('/index.js',(req,res)=>{
+    res.sendFile(path.resolve(__dirname,'./public/index.js'))
+})
+app.all('*',(req,res)=>{
+    res.status(404).send('Not Found')
+})
+app.listen(5000)
+//Or use middleware
+//app.use(express.static('public'))
+
+
 
 
